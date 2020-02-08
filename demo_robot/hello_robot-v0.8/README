@@ -1,0 +1,12 @@
+Programme hello_robot
+Version 0.8
+
+Auteur : Matthias Brun (matthias.brun@eseo.fr)
+
+Programme exemple pour la programmation d'un robot ProSE
+avec le simulateur Intox (et librairie Infox associée).
+
+
+Compilation : c.f. Makefile
+
+--

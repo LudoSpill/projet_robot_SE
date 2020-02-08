@@ -1,0 +1,249 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Ro",
+				"Robot_new"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "/* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */  \n  \n\n#include \"robot.h\"\n#include \"prose.h\"\n\n#define LEFT_MOTOR MD\n#define RIGHT_MOTOR MA\n#define LIGHT_SENSOR S1\n#define FRONT_BUMPER S3\n#define FLOOR_SENSOR S2\n\n// a completer\n\n\n/**\n * Start the Robot (initialize communication and open port)\n\n */\nextern void Robot_start(){\n\tif (ProSE_Intox_init(\"127.0.0.1\", 12345) == -1) {\n\t\tPProseError(\"Problème d'initialisation du simulateur Intox\");\n\t}\n}\n\n\n/**\n * Stop Robot (stop communication and close port)\n */\nextern void Robot_stop(){\n\tProSE_Intox_close();\n}\n\n\n/**\n * @briel initialize in memory the object Robot\n * \n */\nextern void Robot_new(){\n\n\tRobot * this;\n\t\n\tthis = (Robot *) malloc(sizeof(Robot));\n\n\t/* Initialisation des moteurs. */\n\tthis->mD = Motor_open(MD);\n\tif (this->mD == NULL) PProseError(\"Problème d'ouverture du moteur droit (port MD)\");\n\n\tthis->mG = Motor_open(MA);\n\tif (this->mG == NULL) PProseError(\"Problème d'ouverture du moteur gauche (port MA)\");\n\n}\n\n\n/**\n *  @brief destruct the object Robot from memory \n */\nextern void Robot_free(){\n\n}\n/**\n * Robot_getRobotSpeed\n * \n * @brief return the speed of the robot (positive average of the right's and left's current wheel power) \n * @return speed of the robot (beetween 0 and 100)\n */\nextern int Robot_getRobotSpeed(){\n\treturn 0;\n}\n\n/**\n * Robot_getSensorState\n * \n * @brief return the captor's states of the bumper and the luminosity\n * @return SensorState\n */\n/*extern SensorState Robot_getSensorState(){\n\treturn void;\n}*/\n\n/**\n * Robot_setWheelsVelocity\n * \n * @brief set the power on the wheels of the robot\n * @param int mr : right's wheel power, value between -10O and 100\n * @param int ml : left's wheel power, value between -100 and 100\n */\nextern void Robot_setWheelsVelocity(int mr,int ml){\n\n}\n\n",
+			"file": "I2/S7/Projet_robot/version_a_completer/src/mrRobot/robot.c",
+			"file_size": 1821,
+			"file_write_time": 132218564645266453,
+			"settings":
+			{
+				"buffer_size": 1786,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/robot",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src/mrRobot"
+	],
+	"file_history":
+	[
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/robot/robot.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/main.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/prose_infox.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/robot/robot.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/prose_brick_pi.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/motors.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src/mrRobot/robot.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/robot/robot.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/robot/robot.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src/mrRobot/robot.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/defs.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/src/main.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src/mrRobot/adminui.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/Makefile",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/version_a_completer/src/main.c",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/prose.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/infox_prose-x86_64-v0.3/include/infox/prose/prose_infox.h",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/demo_robot/hello_robot-v0.8/bin/robot_pc",
+		"/home/ludovic/Documents/ESEO/I2/S7/Projet_robot/Démo robot/hello_robot-v0.8/src/main.c"
+	],
+	"find":
+	{
+		"height": 0.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"folders":
+	[
+		{
+			"path": "/home/ludovic/Documents/ESEO/I2/S7/Projet_robot"
+		}
+	],
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "I2/S7/Projet_robot/version_a_completer/src/mrRobot/robot.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1786,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1070,
+								1070
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 380.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "",
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 228.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
