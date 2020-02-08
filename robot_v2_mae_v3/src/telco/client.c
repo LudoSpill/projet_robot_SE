@@ -47,7 +47,7 @@ extern void Client_readMsg(){
     read(un_socket, &donnees, sizeof(donnees));     /* ATTENTION : fonction bloquante */
 }
 
-
+extern void Fct_salut(int coucou){}
 
 
 
