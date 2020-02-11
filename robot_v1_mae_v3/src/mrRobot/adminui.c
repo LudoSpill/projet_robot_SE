@@ -18,11 +18,11 @@ static void askMvt(Direction dir);
 static void ask4Log();
 static void askClearLog();
 
-typedef enum {ON, OFF} Flag;
+typedef enum {ON, OFF} Flag_stop;
 
 
 static char input;
-static Flag flag;
+static Flag_stop flag_stop;
 
 /**
  * Start AdminUI and waits for the user's input until the user ask to quit
@@ -32,7 +32,7 @@ extern void AdminUI_start(){
 
 	printf("Bienvenue sur Robot V1\n");
 	Pilot_start();	
-	flag = OFF;
+	flag_stop = OFF;
 	run();
 
 }
@@ -126,14 +126,14 @@ static void captureChoice(){
 	case ('a'):
 		printf("Vous avez demandé l'action : quitter\n");
 		askMvt(STOP);
-		flag = ON;
+		flag_stop = ON;
 		break;
 
 	default:
 		printf("Vous avez demandé l'action : \nCommande non reconnue\n");
 		break;
 	}
-	if (flag == OFF){
+	if (flag_stop == OFF){
 			display();
 		}
 }
@@ -143,7 +143,7 @@ static void captureChoice(){
 static void run(){
 	display();
 	system("stty raw -echo");
-	while(flag == OFF) {
+	while(flag_stop == OFF) {
 		captureChoice();
 	}
 	

@@ -8,62 +8,151 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include "server.h"
+#include "pilot.h"
 
 #define MAX_PENDING_CONNECTIONS (5)
+#define VEL_POWER_FORWARD (80)
+#define VEL_POWER_BACKWARD (60)
+#define VEL_POWER_RIGHT (50)
+#define VEL_POWER_LEFT (50)
+#define VEL_POWER_STOP (0)
 
-extern void Server_start();
 
-extern void Server_stop();
+static void Server_give_order();
+static void Server_send_mvt(Direction direction);
 
-extern void Server_sendMsg();
+static int Tab_Dir_Pow[NB_DIR] = {50, 50, 80, 60, 0}; //même ordre que l'enum Direction
 
-extern void Server_readMsg();
+typedef enum{
+    OFF, ON
+}Flag_stop;
 
-void communication_avec_client(int socket, int age_capitaine){
+typedef enum{
+	C_NULL = 0,
+	C_FORWARD,
+	C_BACKWARD,
+	C_RIGHT,
+	C_LEFT,
+	C_STOP,
+	C_DISPLAY_LOGS,
+	C_QUIT
+} C_Request;
 
-    DesDonnees ma_donnee;
-    int quantite_envoyee;
+int socket_ecoute;
+int socket_communication_ext;
+struct sockaddr_in adresse_serveur;
+int message;
+static Flag_stop flag_stop;
 
-    strcpy(ma_donnee.message, "bonjour");
-    ma_donnee.age_capitaine = htonl(age_capitaine); /* Pour envoyer la donnée au format du host vers le format du network (32 bits) */
+extern void Server_start(){
+    flag_stop = OFF;
+    Pilot_start();
 
-    /* On envoie une donnée jusqu'à ce que le client ferme la connexion */
-    quantite_envoyee = write(socket, &ma_donnee, sizeof(ma_donnee));
+    socket_ecoute = socket(AF_INET, SOCK_STREAM, 0);
+    adresse_serveur.sin_family = AF_INET;
+    adresse_serveur.sin_port = htons(PORT_DU_SERVEUR);
+    adresse_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    close(socket);
+    //printf("%d\n",adresse_serveur.sin_addr.s_addr);
 
-    exit(0);
+    if(bind(socket_ecoute, (struct sockaddr *) &adresse_serveur, sizeof(adresse_serveur)) == -1){
+        printf("Erreur : le socket écoute ne s'est pas lié au serveur.\n");
+        exit(0);
+    }
+    if(listen(socket_ecoute, MAX_PENDING_CONNECTIONS) == -1){
+        printf("Erreur : le socket serveur n'a pas pu écouter les connexions entrantes.\n");
+        exit(0);
+    }
+    
+    //socket_communication_ext = accept(socket_ecoute, NULL, 0);
+
 }
 
-int main(void){
-    int socket_ecoute;
-    int socket_donnees;
-    int age_capitaine_courant = 25;
-    struct sockaddr_in mon_adresse;
+extern void Server_stop(){
+    close(socket_ecoute);
+}
 
-    /* Creation du socket : AF_INET = IP, SOCK_STREAM = TCP => man socket pour plus d'infos */
-    socket_ecoute = socket(AF_INET, SOCK_STREAM, 0);
-    mon_adresse.sin_family = AF_INET;                   /* Type d'adresse = IP */
-    mon_adresse.sin_port = htons(PORT_DU_SERVEUR);      /* htons : host to network + s = 2 octets : Port TCP où le service est accessible */
-    mon_adresse.sin_addr.s_addr = htonl(INADDR_ANY);    /* htons : host to network + l = 4 octets : On s'attache à toutes les interfaces */
+extern void Server_sendMsg(int msg){
+    //strcpy(message,"Message provenant du serveur");
+    //message = htonl(message); /* Pour envoyer la donnée au format du host vers le format du network (32 bits) */
+    write(socket_communication_ext, &msg, sizeof(msg));
+    close(socket_communication_ext);
+
+    //message = htons(message);
+
+    // while(1){
+    //     /* Acceptation de la connexion */
+    //     // socket_communication_ext = accept(socket_ecoute, NULL, 0);
+    //     if (fork() == 0){     /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
+    //         if(write(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
+    //             printf("Erreur d'envoi du message par le serveur.\n");
+    //             exit(0);
+    //         }
+    //     }
+    // }
+}
+
+extern void Server_readMsg(){
     
-    /* On attache le coket à l'adresse indiquée */
-    bind(socket_ecoute, (struct sockaddr *)&mon_adresse, sizeof(mon_adresse));  /* sockaddr_in = héritage de sockaddr : une adresse INTERNET (sockaddr_in) est une adresse (sockaddr) */
+    // if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
+    //     printf("Erreur de lecture du message par le client.\n");
+    //     exit(0);
+    // }
+    // printf("Message reçu par le serveur : %s\n",message);
 
-    /* Mise en écoute du  */
-    listen(socket_ecoute, MAX_PENDING_CONNECTIONS); /* MAX_PENDING_CONNECTIONS : nb max de connexions simultanées */
-
-    while(1){
+    while(flag_stop == OFF){
+        //printf("NOUVEAU WHILE\n");
         /* Acceptation de la connexion */
-        socket_donnees = accept(socket_ecoute, NULL, 0);
-        age_capitaine_courant ++;
-        /* On crée un tâche qui va communiquer avec le client */
-        if (fork() == 0){                                           /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
-            communication_avec_client(socket_donnees, age_capitaine_courant);
+        socket_communication_ext = accept(socket_ecoute, NULL, 0);
+        if (fork() == 0){     /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
+            if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
+                printf("Erreur de lecture du message envoyé par le client.\n");
+                exit(0);
+            }
+            printf("Message envoyé par le client : %d\n",message);
+            Server_give_order();
         }
     }
-
-    /* On ferme le port sur lequel on écoutait (ne sert à rien) */
-    close(socket_ecoute);
-
 }
+
+static void Server_give_order(){
+    switch (message)
+    {
+    case C_NULL:
+        break;
+    case C_FORWARD:
+        Server_send_mvt(FORWARD);
+        break;
+    case C_BACKWARD:
+        Server_send_mvt(BACKWARD);
+        break;
+    case C_RIGHT:
+        Server_send_mvt(RIGHT);
+        break;
+    case C_LEFT:
+        Server_send_mvt(LEFT);
+        break;
+    case C_STOP:
+        Server_send_mvt(STOP);
+        break;
+    case C_DISPLAY_LOGS:
+        break;
+    case C_QUIT:
+        Server_send_mvt(STOP);
+        Pilot_stop();
+        flag_stop = ON;
+        break;
+    
+    default:
+        break;
+    }
+}
+
+static void Server_send_mvt(Direction direction){
+    VelocityVector vel;
+    vel.dir = direction;
+    vel.power = Tab_Dir_Pow[vel.dir];
+    Pilot_setVelocity(vel);
+}
+
+

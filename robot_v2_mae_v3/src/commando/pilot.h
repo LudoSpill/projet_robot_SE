@@ -36,7 +36,7 @@
 #ifndef PILOT_H
 #define PILOT_H
 
-typedef enum {LEFT=0, RIGHT, FORWARD, BACKWARD, STOP} Direction;
+typedef enum {LEFT=0, RIGHT, FORWARD, BACKWARD, STOP, NB_DIR} Direction;
     
 typedef struct
 {

@@ -6,47 +6,58 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "remoteui.h"
-#include "../commando/pilot.h"
-#include "../commando/robot.h"
+#include "client.h"
+//#include "../commando/pilot.h"
+//#include "../commando/robot.h"
 
-static void setIP(ip ip);
-static void run();
+/* static void setIP(ip ip);
+ */static void run();
 static void display();
 static void captureChoice();
 static void quit();
 static void askMvt(Direction dir);
 static void ask4Log();
 static void askClearLog();
+static void Send_request();
 
 typedef enum {ON, OFF} Flag;
 
-struct ip_t{
-	
-};
+typedef enum{
+	C_NULL = 0,
+	C_FORWARD,
+	C_BACKWARD,
+	C_RIGHT,
+	C_LEFT,
+	C_STOP,
+	C_DISPLAY_LOGS,
+	C_QUIT
+} C_Request;
+
 
 static char input;
 static Flag flag;
+static C_Request request = C_NULL;
 
 /**
- * Start AdminUI and waits for the user's input until the user ask to quit
+ * Start RemoteUI and waits for the user's input until the user ask to quit
  *
  */
-extern void AdminUI_start(){
+extern void RemoteUI_start(){
 
 	printf("Bienvenue sur Robot V1\n");
-	Pilot_start();	
+	Client_start();
 	flag = OFF;
 	run();
 }
 
 /**
- * Stop AdminUI
+ * Stop RemoteUI
  *
  */
-extern void AdminUI_stop(){
+extern void RemoteUI_stop(){
 
 	quit();
-	Pilot_stop();
+	RemoteUI_free();
 	printf("Merci d'avoir utilise Robot V1, a bientot !\n");
 
 }
@@ -58,18 +69,18 @@ static void quit(){
 
 
 /**
- * initialize in memory AdminUI
+ * initialize in memory RemoteUI
  * 
  */
-extern void AdminUI_new(){
+extern void RemoteUI_new(){
 
 }
 
 /**
- * destruct the AdminUI from memory 
+ * destruct the RemoteUI from memory 
  *
  */
-extern void AdminUI_free(){
+extern void RemoteUI_free(){
 
 }
 
@@ -128,7 +139,7 @@ static void captureChoice(){
 	case ('a'):
 		printf("Vous avez demandé l'action : quitter\n");
 		askMvt(STOP);
-		AdminUI_stop();
+		RemoteUI_stop();
 		flag = ON;
 		break;
 
@@ -156,30 +167,35 @@ static void run(){
 
 
 static void askMvt(Direction dir){
-	VelocityVector vel;
 	switch (dir)
 	{
 	case FORWARD:
-		vel.power = 80;
+		request = C_FORWARD;
 		break;
-	case BACKWARD: vel.power = 60;
+	case BACKWARD: 
+		request = C_BACKWARD;
 		break;
-	case RIGHT: vel.power = 50;
+	case RIGHT: 
+		request = C_RIGHT;
 		break;
-	case LEFT: vel.power = 50;
+	case LEFT: 
+		request = C_LEFT;
 		break;
-	case STOP: vel.power = 0;
+	case STOP: 
+		request = C_STOP;
 		break;
 	
 	default:
+		request = C_NULL;
 		break;
 	}
-	vel.dir = dir;
-	Pilot_setVelocity(vel);
+	Send_request();
 }
 
 static void ask4Log(){
-	printf("Vitesse : %d | Collision : %d | Lumière : %f\n", Robot_getRobotSpeed(), Robot_getSensorState().collision, Robot_getSensorState().luminosity);
+	//printf("Vitesse : %d | Collision : %d | Lumière : %f\n", Robot_getRobotSpeed(), Robot_getSensorState().collision, Robot_getSensorState().luminosity);
+	request = C_DISPLAY_LOGS;
+	Send_request();
 }
 
 static void askClearLog(){
@@ -187,4 +203,11 @@ static void askClearLog(){
 		printf("\n");
 	}
 }
+
+static void Send_request(){
+	Client_start();
+	Client_sendMsg(request);
+	Client_stop();
+}
+
  

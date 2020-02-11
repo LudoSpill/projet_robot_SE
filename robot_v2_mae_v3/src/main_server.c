@@ -34,17 +34,16 @@
  */
 
 #include "./telco/remoteui.h"
+#include "./commando/server.h"
 
 /**
  * starts the robot V1 application
  */
 int main (int argc, char *argv[])
 {
+  Server_start();
+  Server_readMsg();
+  Server_stop();
 
-  AdminUI_new();
-  AdminUI_start();
-  AdminUI_stop();
-  AdminUI_free();
   return 0;
 }
-

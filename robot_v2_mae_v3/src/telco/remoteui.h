@@ -1,6 +1,6 @@
 /* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */  
 /**
- * @file  adminUI.h
+ * @file  RemoteUI.h
  *
  * @brief  This component describe the admin user interface. It captures the user's controls and send them to the pilot module.
  *
@@ -34,39 +34,39 @@
  */
 
 
-#ifndef ADMINUI_H
-#define ADMINUI_H
+#ifndef REMOTEUI_H
+#define REMOTEUI_H
 
-typedef struct ip_t ip;
+typedef enum {LEFT=0, RIGHT, FORWARD, BACKWARD, STOP, NB_DIR} Direction;
 
 
 /**
- * Start AdminUI and waits for the user's input until the user ask to quit
+ * Start RemoteUI and waits for the user's input until the user ask to quit
  *
  */
-extern void AdminUI_start();
+extern void RemoteUI_start();
 
 
 /**
- * Stop AdminUI
+ * Stop RemoteUI
  *
  */
-extern void AdminUI_stop();
+extern void RemoteUI_stop();
 
 
 /**
- * initialize in memory AdminUI
+ * initialize in memory RemoteUI
  * 
  */
-extern void AdminUI_new();
+extern void RemoteUI_new();
 
 /**
- * destruct the AdminUI from memory 
+ * destruct the RemoteUI from memory 
  *
  */
-extern void AdminUI_free();
+extern void RemoteUI_free();
 
 
 
-#endif /* ADMINUI_H */
+#endif /* RemoteUI_H */
 

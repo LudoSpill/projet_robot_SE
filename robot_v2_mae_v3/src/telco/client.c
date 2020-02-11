@@ -10,45 +10,56 @@
 #include <sys/socket.h>
 #include "client.h"
 
-static void Client_connect();
-static void Client_disconnect();
-
-int un_socket;
-struct sockaddr_in adresse_du_serveur;
+int socket_reseau;
+struct sockaddr_in adresse_serveur;
+int message;
 
 extern void Client_start(){
+    socket_reseau = socket(AF_INET, SOCK_STREAM, 0);
+    adresse_serveur.sin_family = AF_INET;
+    adresse_serveur.sin_port = htons(PORT_DU_SERVEUR);
+    adresse_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
+
+        printf("%d\n",adresse_serveur.sin_addr.s_addr);
+
+    //adresse_serveur.sin_addr = *((struct in_addr *)gethostbyname("localhost")->h_addr_list[0]);
+
+    /* On demande la connexion auprès du serveur */
+    if(connect(socket_reseau, (struct sockaddr *)&adresse_serveur, sizeof(adresse_serveur)) == -1){
+        printf("Erreur de connexion du client au serveur...\n");
+        exit(0);
+    }
+    else
+    {
+        printf("Connexion au serveur réussie...\n");
+    }
     
-    /* on choisit un socket TCP (SOCK_STREAM sur IP (AF_INET)) */
-    un_socket = socket(AF_INET, SOCK_STREAM, 0);
-
-    /* AF_INET = famille TCP/IP */
-    adresse_du_serveur.sin_family = AF_INET;
-
-    /* port du serveur auquel se connecter */
-    adresse_du_serveur.sin_port = htons(PORT_DU_SERVEUR);
-
-    /* adresse IP (ou nom de domaine) du serveur auquel se connecter */
-    adresse_du_serveur.sin_addr = *((struct in_addr *)gethostbyname("localhost")->h_addr_list[0]);
-    
-     /* On demande la connexion auprès du serveur */
-    connect(un_socket, (struct sockaddr *)&adresse_du_serveur, sizeof(adresse_du_serveur));
 
 }
 
 extern void Client_stop(){
-    close(un_socket);
+    close(socket_reseau);
 }
 
-extern void Client_sendMsg(){
+extern void Client_sendMsg(int msg){
 
+    //strcpy(msg,"Message provenant du client");
+    //message = htonl(message); /* Pour envoyer la donnée au format du host vers le format du network (32 bits) */
+
+    write(socket_reseau, &msg, sizeof(msg));
+
+    //exit(0);
 }
 
 extern void Client_readMsg(){
-    read(un_socket, &donnees, sizeof(donnees));     /* ATTENTION : fonction bloquante */
+    if(read(socket_reseau, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
+        printf("Erreur de lecture du message par le client.\n");
+        exit(0);
+    }
+    printf("Message reçu par le client : %d\n",message);
+
+    
 }
-
-extern void Fct_salut(int coucou){}
-
 
 
 

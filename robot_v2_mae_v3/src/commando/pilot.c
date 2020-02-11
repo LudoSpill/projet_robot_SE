@@ -3,7 +3,6 @@
    
 #include <stdlib.h>
 #include <stdio.h>
-#include "../telco/remoteui.h"
 #include "pilot.h"
 #include "robot.h"
 
@@ -107,8 +106,6 @@ static void Pilot_evalVelocity(VelocityVector vel){
     }
 }
 
-
-
 /**
  * Start Pilot
  *
@@ -117,7 +114,6 @@ extern void Pilot_start(){
     Pilot_new();
    	Robot_start();
 }
-
 
 /**
  * Stop Pilot
@@ -128,14 +124,12 @@ extern void Pilot_stop(){
     Robot_stop();
 }
 
-
 /**
  * initialize in memory the object Pilot
  */
 extern void Pilot_new(){
     currentState = S_IDLE;
 }
-
 
 /**
  * destruct the object Pilot from memory 

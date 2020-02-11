@@ -28,6 +28,7 @@ static Robot * robot;
 extern void Robot_start(){
 	if (ProSE_Intox_init("127.0.0.1", 12345) == -1) {
 		PProseError("Problème d'initialisation du simulateur Intox");
+		exit(0);
 	}
 	Robot_new();
 }
