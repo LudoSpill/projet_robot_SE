@@ -43,5 +43,6 @@ typedef struct
     int luminosity;
 }Robot_Logs;
 
+extern void handle_error(int err, char err_msg[]);
 
 #endif /* COMMON_DATA_H */

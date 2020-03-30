@@ -15,21 +15,6 @@ static void ask4Log();
 static void askClearLog();
 static void Send_mvt_request();
 
-// typedef enum {ON, OFF} Flag;
-
-// typedef enum{
-// 	C_NULL = 0,
-// 	C_FORWARD,
-// 	C_BACKWARD,
-// 	C_RIGHT,
-// 	C_LEFT,
-// 	C_STOP,
-// 	C_QUIT,
-// 	C_DISPLAY_LOGS,
-// 	C_CLEAR_LOGS,
-// 	NB_C_Request
-// } C_Request;
-
 typedef enum{
 	D_MENU = 0,
 	D_INPUT,
@@ -60,7 +45,7 @@ static int request = C_NULL;
 extern void RemoteUI_start(){
 
 	printf("Bienvenue sur Robot V2\n");
-	Client_start();		//TODO : gestion erreur ici
+	Client_start();
 	flag = OFF;
 	run();
 }
@@ -194,7 +179,7 @@ static void run(){
 static void askCmd(){
 	if(request >= C_FORWARD && request <= C_QUIT)
 	{
-		Send_mvt_request();		// Affichage d'erreur
+		Send_mvt_request();
 	}
 	else if (request == C_DISPLAY_LOGS)
 	{
@@ -237,5 +222,4 @@ extern void handle_error(int err, char err_msg[]){
 	{
 		printf("%s\n",err_msg);
 	}
-	
  }

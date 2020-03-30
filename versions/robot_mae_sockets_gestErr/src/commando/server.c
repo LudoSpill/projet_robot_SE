@@ -13,11 +13,6 @@
 
 
 #define MAX_PENDING_CONNECTIONS (5)
-#define VEL_POWER_FORWARD (80)
-#define VEL_POWER_BACKWARD (60)
-#define VEL_POWER_RIGHT (50)
-#define VEL_POWER_LEFT (50)
-#define VEL_POWER_STOP (0)
 
 #define MAX_LOGS_LENGTH (128)
 
@@ -32,22 +27,6 @@ static int Tab_Dir_Pow[NB_DIR] = {VEL_POWER_LEFT,
      VEL_POWER_STOP
 }; //même ordre que l'enum Direction
 
-// typedef enum{
-//     ON =0, OFF
-// }Flag_stop;
-
-// typedef enum{
-// 	C_NULL = 0,
-// 	C_FORWARD,
-// 	C_BACKWARD,
-// 	C_RIGHT,
-// 	C_LEFT,
-// 	C_STOP,
-// 	C_QUIT,
-// 	C_DISPLAY_LOGS,
-// 	C_CLEAR_LOGS,
-// 	NB_C_Request
-// } C_Request;
 
 int socket_ecoute;
 int socket_communication_ext;
@@ -55,11 +34,22 @@ struct sockaddr_in adresse_serveur;
 int message;
 static volatile Flag flag_stop;
 
+char err_msg[ERROR_MSG_MAX_LENGTH];
+
+
 extern void Server_start(){
     flag_stop = OFF;
     Pilot_start();
-
     socket_ecoute = socket(AF_INET, SOCK_STREAM, 0);
+
+    if(socket_ecoute == -1){
+        /* handle error */
+        if(errno != 0){
+            strcpy(err_msg, "Erreur : le socket écoute n'a pas pu être créé");
+            handle_error(errno, err_msg);
+        }
+    }
+    
     adresse_serveur.sin_family = AF_INET;
     adresse_serveur.sin_port = htons(PORT_DU_SERVEUR);
     adresse_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -77,8 +67,11 @@ extern void Server_start(){
      */
 
     if(bind(socket_ecoute, (struct sockaddr *) &adresse_serveur, sizeof(adresse_serveur)) == -1){
-        printf("Erreur : le socket écoute ne s'est pas lié au serveur.\n");
-        exit(EXIT_FAILURE);
+        /* handle error */
+        if(errno != 0){
+            strcpy(err_msg, "Erreur : le socket écoute ne s'est pas lié au serveur");
+            handle_error(errno, err_msg);
+        }
     }
     else
     {
@@ -86,42 +79,27 @@ extern void Server_start(){
     }
     
     if(listen(socket_ecoute, MAX_PENDING_CONNECTIONS) == -1){
-        printf("Erreur : le socket serveur n'a pas pu écouter les connexions entrantes.\n");
-        exit(EXIT_FAILURE);
+        /* handle error */
+        if(errno != 0){
+            strcpy(err_msg, "Erreur : le socket serveur n'a pas pu écouter les connexions entrantes");
+            handle_error(errno, err_msg);
+        }
     }
     else
     {
         printf("Socket écoute prêt à écouter...\n");
     }
         
-    socket_communication_ext = accept(socket_ecoute, NULL, 0); // TODO
-
+    socket_communication_ext = accept(socket_ecoute, NULL, 0);
+    /* handle error */
+    if(errno != 0){
+        strcpy(err_msg, "Erreur de lecture du message par le client...");
+        handle_error(errno, err_msg);
+    }
 }
 
 extern void Server_stop(){
     close(socket_ecoute);
-}
-
-extern void Server_sendMsg(int msg){
-    //strcpy(message,"Message provenant du serveur");
-    //message = htonl(message); /* Pour envoyer la donnée au format du host vers le format du network (32 bits) */
-    printf("message envoyé par le serveur : %d\n",msg);
-    
-    write(socket_communication_ext, &msg, sizeof(msg));
-    close(socket_communication_ext);
-
-    //message = htons(message);
-
-    // while(1){
-    //     /* Acceptation de la connexion */
-    //     // socket_communication_ext = accept(socket_ecoute, NULL, 0);
-    //     if (fork() == 0){     /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
-    //         if(write(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
-    //             printf("Erreur d'envoi du message par le serveur.\n");
-    //             exit(EXIT_FAILURE);
-    //         }
-    //     }
-    // }
 }
 
 extern void Server_readMsg(){
@@ -137,8 +115,12 @@ extern void Server_readMsg(){
         //socket_communication_ext = accept(socket_ecoute, NULL, 0);
         //if (fork() == 0){     /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
             if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
-                printf("Erreur de lecture du message envoyé par le client.\n");
-                printf("Message envoyé par le client : %d\n",message);
+                /* handle error */
+                if(errno != 0){
+                    printf("Message envoyé par le client : %d\n",message);
+                    strcpy(err_msg, "Erreur de lecture du message envoyé par le client");
+                    handle_error(errno, err_msg);
+                }
                 exit(EXIT_FAILURE);
             }
             printf("Message reçu par le serveur : %d\n",message);
@@ -189,16 +171,14 @@ static void Server_send_mvt(Direction direction){
 }
 
 static void Server_send_robot_state(){
-    // int logz[3] = {
-    //     Robot_getRobotSpeed(),
-    //     Robot_getSensorState().collision,
-    //     (int) Robot_getSensorState().luminosity
-    // };
-    // write(socket_communication_ext, &logz, sizeof(logz)); //TODO : gérer erreur
+
     char logs[MAX_LOGS_LENGTH];
     sprintf(logs,"%d %d %d",Robot_getRobotSpeed(),Robot_getSensorState().collision,(int)Robot_getSensorState().luminosity);
-    write(socket_communication_ext, &logs, sizeof(logs)); //TODO : gérer erreur
-
-
-
+    if(write(socket_communication_ext, &logs, sizeof(logs)) == -1){
+        /* handle error */
+        if(errno != 0){
+        strcpy(err_msg, "Erreur d'envoi de l'etat du robot...");
+        handle_error(errno, err_msg);
+        }
+    }; 
 }

@@ -1,11 +1,11 @@
 /* -*- mode: c; c-basic-offset: 4; indent-tabs-mode: nil -*- */  
 /**
- * @file  RemoteUI.h
+ * @file  main.c
  *
- * @brief  This component describe the admin user interface. It captures the user's controls and send them to the pilot module.
+ * @brief  Launch the Robot's programm for basic version (no modularity, no socket, no task, no error's management)
  *
  * @author Jerome Delatour
- * @date 17-04-2016
+ * @date 19-04-2016
  * @version 1
  * @section License
  *
@@ -33,40 +33,17 @@
  * 
  */
 
-
-#ifndef REMOTEUI_H
-#define REMOTEUI_H
-
-#include "common_data.h"
+//#include "./telco/remoteui.h"
+#include "./commando/server.h"
 
 /**
- * Start RemoteUI and waits for the user's input until the user ask to quit
- *
+ * starts the robot V1 application
  */
-extern void RemoteUI_start();
+int main (int argc, char *argv[])
+{
+  Server_start();
+  Server_readMsg();
+  Server_stop();
 
-
-/**
- * Stop RemoteUI
- *
- */
-extern void RemoteUI_stop();
-
-
-/**
- * initialize in memory RemoteUI
- * 
- */
-extern void RemoteUI_new();
-
-/**
- * destruct the RemoteUI from memory 
- *
- */
-extern void RemoteUI_free();
-
- extern void handle_error(int err, char err_msg[]);
-
-
-#endif /* RemoteUI_H */
-
+  return 0;
+}

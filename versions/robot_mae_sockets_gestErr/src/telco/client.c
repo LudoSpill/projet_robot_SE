@@ -22,16 +22,16 @@ char err_msg[ERROR_MSG_MAX_LENGTH];
 extern void Client_start(){
     socket_reseau = socket(AF_INET, SOCK_STREAM, 0);
     /* handle error */
-        if(errno != 0){
-            strcpy(err_msg, "Erreur de création du socket...");
-            handle_error(errno, err_msg);
-        }
+    if(errno != 0){
+        strcpy(err_msg, "Erreur de création du socket...");
+        handle_error(errno, err_msg);
+    }
     adresse_serveur.sin_family = AF_INET;
     adresse_serveur.sin_port = htons(PORT_DU_SERVEUR);
     adresse_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
 
     /* On demande la connexion auprès du serveur */
-    if(connect(socket_reseau, (struct sockaddr *)&adresse_serveur, sizeof(adresse_serveur)) == -1){ //regarder doc connect
+    if(connect(socket_reseau, (struct sockaddr *)&adresse_serveur, sizeof(adresse_serveur)) == -1){ 
         /* handle error */
         if(errno != 0){
             strcpy(err_msg, "Erreur de connexion du client au serveur...");
@@ -49,10 +49,10 @@ extern void Client_start(){
 extern void Client_stop(){
     close(socket_reseau);
     /* handle error */
-        if(errno != 0){
-            strcpy(err_msg, "Erreur de fermeture du client...");
-            handle_error(errno, err_msg);
-        }
+    if(errno != 0){
+        strcpy(err_msg, "Erreur de fermeture du client...");
+        handle_error(errno, err_msg);
+    }
 }
 
 extern void Client_sendMsg(int msg){
