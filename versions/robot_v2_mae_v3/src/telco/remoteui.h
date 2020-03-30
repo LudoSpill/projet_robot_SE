@@ -37,6 +37,8 @@
 #ifndef REMOTEUI_H
 #define REMOTEUI_H
 
+#include "common_data.h"
+
 /**
  * Start RemoteUI and waits for the user's input until the user ask to quit
  *

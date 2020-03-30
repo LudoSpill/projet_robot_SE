@@ -1,6 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "common_data.h"
+
 extern void Client_start();
 
 extern void Client_stop();

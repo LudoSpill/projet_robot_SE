@@ -1,7 +1,7 @@
-remoteui.o: remoteui.c ../required_common_data.h remoteui.h client.h
-
-../required_common_data.h:
+remoteui.o: remoteui.c remoteui.h ../common_data.h client.h
 
 remoteui.h:
+
+../common_data.h:
 
 client.h:

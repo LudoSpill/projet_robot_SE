@@ -34,6 +34,7 @@
  */
 
 #include "prose.h"
+#include "common_data.h"
 
 #ifndef ROBOT_H
 #define ROBOT_H

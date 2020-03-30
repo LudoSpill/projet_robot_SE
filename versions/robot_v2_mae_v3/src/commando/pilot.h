@@ -35,6 +35,8 @@
 
 #ifndef PILOT_H
 #define PILOT_H
+
+#include "common_data.h"
  
 typedef struct
 {
