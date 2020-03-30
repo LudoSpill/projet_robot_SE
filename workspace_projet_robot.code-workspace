@@ -6,7 +6,16 @@
 	],
 	"settings": {
 		"files.associations": {
-			"socket.h": "c"
+			"socket.h": "c",
+			"unistd.h": "c",
+			"string.h": "c",
+			"client.h": "c",
+			"stdlib.h": "c",
+			"errno.h": "c",
+			"common_data.h": "c",
+			"stdio.h": "c",
+			"required_common_data.h": "c",
+			"netdb.h": "c"
 		}
 	}
 }
