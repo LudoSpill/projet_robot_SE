@@ -1,0 +1,12 @@
+server.c:120:Server_readMsg(): Message reçu par le serveur : 1
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 0
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 2
+watchdog.c:56:mainHandler(): ---Watchdog triggered---
+pilot.c:182:handleRunningState(): after Wait
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 1
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 5
+server.c:120:Server_readMsg(): Message reçu par le serveur : 7
+server.c:150:Server_give_order(): Arrêt demandé
+pilot.c:182:handleRunningState(): after Wait
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 0
+pilot.c:132:Pilot_run(): Event lu dans la BAL : 3

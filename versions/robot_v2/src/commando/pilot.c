@@ -83,7 +83,7 @@ static void Pilot_performAction(TransitionAction action, VelocityVector vel){
         Pilot_evalVelocity(vel);
         break;
     case A_TEST_BUMP:
-
+        // TODO
         break;
     case A_STOP:
         Pilot_sendMvt(vel);
@@ -104,7 +104,6 @@ static void Pilot_evalVelocity(VelocityVector vel){
 
 /**
  * Start Pilot
- *
  */
 extern void Pilot_start(){
     Pilot_new();
@@ -113,7 +112,6 @@ extern void Pilot_start(){
 
 /**
  * Stop Pilot
- *
  */
 extern void Pilot_stop(){
     Pilot_free();

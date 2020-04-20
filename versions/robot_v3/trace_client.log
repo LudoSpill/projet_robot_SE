@@ -1,0 +1,22 @@
+remoteui.c:203:RemoteUI_run(): Event reçu : 0
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 1
+remoteui.c:511:getKeyboardInput(): J'attend un input
+remoteui.c:515:getKeyboardInput(): J'ai reçu l'input :  
+remoteui.c:203:RemoteUI_run(): Event reçu : 7
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 8
+remoteui.c:203:RemoteUI_run(): Event reçu : 1
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 5
+remoteui.c:548:handle_error(): Connexion au serveur réussie...
+remoteui.c:203:RemoteUI_run(): Event reçu : 2
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 2
+remoteui.c:511:getKeyboardInput(): J'attend un input
+remoteui.c:515:getKeyboardInput(): J'ai reçu l'input : z
+remoteui.c:203:RemoteUI_run(): Event reçu : 8
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 6
+remoteui.c:203:RemoteUI_run(): Event reçu : 5
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 2
+remoteui.c:511:getKeyboardInput(): J'attend un input
+remoteui.c:515:getKeyboardInput(): J'ai reçu l'input : a
+remoteui.c:203:RemoteUI_run(): Event reçu : 9
+remoteui.c:214:RemoteUI_performAction(): Action réalisée : 9
+remoteui.c:209:RemoteUI_run(): while fini

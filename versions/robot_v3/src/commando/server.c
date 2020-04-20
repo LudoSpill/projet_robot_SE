@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include "server.h"
 #include "pilot.h"
 #include "robot.h"
@@ -20,7 +21,8 @@ static void Server_give_order();
 static void Server_send_mvt(Direction direction);
 static void Server_send_robot_state();
 
-static int Tab_Dir_Pow[NB_DIR] = {VEL_POWER_LEFT,
+static int Tab_Dir_Pow[NB_DIR] = {
+    VEL_POWER_LEFT,
      VEL_POWER_RIGHT, 
      VEL_POWER_FORWARD, 
      VEL_POWER_BACKWARD, 
@@ -49,10 +51,10 @@ extern void Server_start(){
             handle_error(errno, err_msg);
         }
     }
-    
+
     adresse_serveur.sin_family = AF_INET;
     adresse_serveur.sin_port = htons(PORT_DU_SERVEUR);
-    adresse_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
+    adresse_serveur.sin_addr.s_addr = inet_addr(IP_DU_SERVEUR); 
 
     /**
      * Portion de code permettant de lier le serveur au même port instantanément après avoir fermé le socket
@@ -96,36 +98,27 @@ extern void Server_start(){
         strcpy(err_msg, "Erreur de lecture du message par le client...");
         handle_error(errno, err_msg);
     }
+    printf("Connexion du client acceptée...\n");
 }
 
 extern void Server_stop(){
     close(socket_ecoute);
+    Pilot_stop();
 }
 
 extern void Server_readMsg(){
-    
-    // if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
-    //     printf("Erreur de lecture du message par le client.\n");
-    //     exit(EXIT_FAILURE);
-    // }////
-    // printf("Message reçu par le serveur : %s\n",message);
-
     while(flag_stop == OFF){
-        /* Acceptation de la connexion */
-        //socket_communication_ext = accept(socket_ecoute, NULL, 0);
-        //if (fork() == 0){     /* fork() : duplication de la tâche, on assigne 0 à la tâche créée */
-            if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
-                /* handle error */
-                if(errno != 0){
-                    printf("Message envoyé par le client : %d\n",message);
-                    strcpy(err_msg, "Erreur de lecture du message envoyé par le client");
-                    handle_error(errno, err_msg);
-                }
-                exit(EXIT_FAILURE);
+        if(read(socket_communication_ext, &message, sizeof(message)) == -1){   /* ATTENTION : fonction bloquante */
+            /* handle error */
+            if(errno != 0){
+                trace("Message envoyé par le client : %d\n",message);
+                strcpy(err_msg, "Erreur de lecture du message envoyé par le client");
+                handle_error(errno, err_msg);
             }
-            printf("Message reçu par le serveur : %d\n",message);
-            Server_give_order();
-        //}
+            exit(EXIT_FAILURE);
+        }
+        trace("Message reçu par le serveur : %d\n",message);
+        Server_give_order();
     }
 }
 
@@ -154,7 +147,7 @@ static void Server_give_order(){
         break;
     case C_QUIT:
         Server_send_mvt(STOP);
-        Pilot_stop();
+        trace("Arrêt demandé\n");
         flag_stop = ON;
         break;
     
@@ -164,9 +157,10 @@ static void Server_give_order(){
 }
 
 static void Server_send_mvt(Direction direction){
-    VelocityVector vel;
-    vel.dir = direction;
-    vel.power = Tab_Dir_Pow[vel.dir];
+    VelocityVector vel = {
+        direction,
+        Tab_Dir_Pow[vel.dir]
+    };
     Pilot_setVelocity(vel);
 }
 
@@ -177,7 +171,7 @@ static void Server_send_robot_state(){
     if(write(socket_communication_ext, &logs, sizeof(logs)) == -1){
         /* handle error */
         if(errno != 0){
-        strcpy(err_msg, "Erreur d'envoi de l'etat du robot...");
+        strcpy(err_msg, "Erreur d'envoi de l'état du robot...");
         handle_error(errno, err_msg);
         }
     }; 

@@ -15,7 +15,12 @@
 			"common_data.h": "c",
 			"stdio.h": "c",
 			"required_common_data.h": "c",
-			"netdb.h": "c"
+			"netdb.h": "c",
+			"types.h": "c",
+			"in.h": "c",
+			"remoteui.h": "c",
+			"pthread.h": "c",
+			"watchdog.h": "c"
 		}
 	}
 }
