@@ -1,13 +1,4 @@
 # projet_robot_SE
-rgd
-g
-gd
-gdrg
-dg
-dr
-sesfsqzdqzdqdzqd
-d
-qdqz
-dqd
-qd
-salutdqzdqzdqzdqzd
+
+le serveur et le client se trouvent dans le /bin
+Ils sont à lancer séparément
